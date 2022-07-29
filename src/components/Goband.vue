@@ -71,15 +71,10 @@ function getPlayerRole(): PlayerRole {
 
 // 绑定棋盘事件
 function bindBoardEvent(e: MouseEvent) {
-  console.log("绑定棋盘事件");
-  // console.log(e);
-  console.log(e.offsetX, e.offsetY);
-
   // 棋盘定位转换为坐标系坐标，以棋盘左上角为(0, 0）
   const x = Math.floor((e.offsetX + space / 2 - margin) / space);
   const y = Math.floor((e.offsetY + space / 2 - margin) / space);
 
-  console.log(x, y);
   const point: PieceCoord = { x, y };
 
   // 判断执方
