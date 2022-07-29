@@ -9,6 +9,12 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
 
+const space: number = 50; // 棋盘件空格
+const scale: number = 10; // 棋盘格数 scale x scale
+const margin: number = 50; // 棋盘外空白
+const pieceSize: number = 18; // 棋子大小（直径）
+
+
 enum PlayerRole {
   White,
   Black,
@@ -20,43 +26,94 @@ interface PieceCoord {
   y: number;
 }
 
-const space: number = 50; // 棋盘件空格
-const scale: number = 10; // 棋盘格数 scale x scale
-const margin: number = 50; // 棋盘外空白
-const pieceSize: number = 18; // 棋子大小（直径）
+// 棋盘
+class Chessboard {
+  chessCanvas: HTMLCanvasElement; // 棋盘画布对象
+  chessboardCtx!: CanvasRenderingContext2D; // 棋盘画布操作对象
+  piecesCtx!: CanvasRenderingContext2D; // 棋子画布操作对象
 
-// 棋盘画布对象
-let chessCanvas: HTMLCanvasElement;
+  constructor() {
+    // 初始化棋盘画布
+    this.chessCanvas = document.getElementById("chessboard") as HTMLCanvasElement;
 
-// 棋盘画布操作对象
-let chessboardCtx: CanvasRenderingContext2D;
-// 棋子画布操作对象
-let piecesCtx: CanvasRenderingContext2D;
+    const ctx = this.chessCanvas.getContext("2d");
+    if (ctx == null) {
+      console.error("init failed");
+      return;
+    }
+    this.chessboardCtx = ctx;
+    this.piecesCtx = ctx;
 
-// 构建棋盘
-function drawChessboard() {
-  // 设置棋盘大小
-  chessCanvas.width = 2 * margin + space * scale;
-  chessCanvas.height = 2 * margin + space * scale;
+    // 绘制棋盘
+    this.drawChessboard()
 
-  // 绘制网格
-  let grid = new Path2D();
-  for (let i = 0; i < scale + 1; i++) {
-    const x = margin + i * space;
-    const y = margin + space * scale;
-    // 横
-    grid.moveTo(margin, x);
-    grid.lineTo(y, x);
-    // 纵
-    grid.moveTo(x, margin);
-    grid.lineTo(x, y);
+    // 事件绑定
+    const self = this
+    this.chessCanvas.onclick = function (e: MouseEvent) {
+      // 棋盘定位转换为坐标系坐标，以棋盘左上角为(0, 0）
+      const x = Math.floor((e.offsetX + space / 2 - margin) / space);
+      const y = Math.floor((e.offsetY + space / 2 - margin) / space);
+
+      const point: PieceCoord = { x, y };
+      // 判断执方
+      if (!self.isLegal(point)) {
+        alert("落子不合法")
+      } else {
+        self.drawPiece(point, getPlayerRole());
+      }
+    }
   }
 
-  chessboardCtx.strokeStyle = "black";
-  chessboardCtx.stroke(grid);
+  // 构建棋盘
+  drawChessboard() {
+    // 设置棋盘大小
+    this.chessCanvas.width = 2 * margin + space * scale;
+    this.chessCanvas.height = 2 * margin + space * scale;
 
-  // 事件处理
-  chessCanvas.onclick = bindBoardEvent;
+    // 绘制网格
+    let grid = new Path2D();
+    for (let i = 0; i < scale + 1; i++) {
+      const x = margin + i * space;
+      const y = margin + space * scale;
+      // 横
+      grid.moveTo(margin, x);
+      grid.lineTo(y, x);
+      // 纵
+      grid.moveTo(x, margin);
+      grid.lineTo(x, y);
+    }
+
+    this.chessboardCtx.strokeStyle = "black";
+    this.chessboardCtx.stroke(grid);
+  }
+
+  // 画棋子
+  drawPiece(point: PieceCoord, role: PlayerRole) {
+    // 坐标系转换为实际棋子位置
+    const x = point.x * space + margin;
+    const y = point.y * space + margin;
+
+    let ctx = this.piecesCtx;
+    ctx.beginPath();
+    ctx.arc(x, y, pieceSize, 0, 2 * Math.PI);
+    ctx.closePath();
+
+    if (role == PlayerRole.White) {
+      ctx.fillStyle = "black";
+    } else {
+      ctx.fillStyle = "white";
+    }
+    ctx.fill();
+  }
+
+  // 棋子落子是否合法
+  isLegal(pos: PieceCoord): boolean {
+    const { x, y } = pos;
+    if (x >= 0 && y >= 0 && x <= scale && y <= scale) {
+      return true;
+    }
+    return false;
+  }
 }
 
 let counter = 0;
@@ -69,51 +126,13 @@ function getPlayerRole(): PlayerRole {
   return PlayerRole.White;
 }
 
-// 绑定棋盘事件
-function bindBoardEvent(e: MouseEvent) {
-  // 棋盘定位转换为坐标系坐标，以棋盘左上角为(0, 0）
-  const x = Math.floor((e.offsetX + space / 2 - margin) / space);
-  const y = Math.floor((e.offsetY + space / 2 - margin) / space);
 
-  const point: PieceCoord = { x, y };
 
-  // 判断执方
-  drawPiece(point, getPlayerRole());
-}
-
-// 画棋子
-function drawPiece(point: PieceCoord, role: PlayerRole) {
-  // 坐标系转换为实际棋子位置
-  const x = point.x * space + margin;
-  const y = point.y * space + margin;
-
-  let ctx = piecesCtx;
-  ctx.beginPath();
-  ctx.arc(x, y, pieceSize, 0, 2 * Math.PI);
-  ctx.closePath();
-
-  if (role == PlayerRole.White) {
-    ctx.fillStyle = "black";
-  } else {
-    ctx.fillStyle = "white";
-  }
-  ctx.fill();
-}
+let chessboard: Chessboard;
 
 onMounted(() => {
-  // 初始化棋盘画布
-  chessCanvas = document.getElementById("chessboard") as HTMLCanvasElement;
-
-  const ctx = chessCanvas.getContext("2d");
-  if (ctx == null) {
-    console.error("init failed");
-    return;
-  }
-  chessboardCtx = ctx;
-  piecesCtx = ctx;
-
-  // 获取并初始化棋盘
-  drawChessboard();
+  // 构造一个棋盘
+  chessboard = new Chessboard()
 });
 </script>
 
@@ -121,6 +140,7 @@ onMounted(() => {
 @boardBg: #ffd75b;
 
 .goband {
+
   // border: 1px solid green;
   #chessboard {
     background-color: @boardBg;
