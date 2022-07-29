@@ -25,12 +25,14 @@ onMounted(() => {
     // 绘制网格
     let grid = new Path2D();
     for (let i = 0; i < scale + 1; i++) {
+      const x = margin + i * space;
+      const y = margin + space * scale;
       // 横
-      grid.moveTo(margin, margin + i * space);
-      grid.lineTo(margin + space * scale, margin + i * space);
+      grid.moveTo(margin, x);
+      grid.lineTo(y, x);
       // 纵
-      grid.moveTo(margin + i * space, margin);
-      grid.lineTo(margin + i * space, margin + space * scale);
+      grid.moveTo(x, margin);
+      grid.lineTo(x, y);
     }
 
     ctx.strokeStyle = "black";
