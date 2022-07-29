@@ -17,27 +17,31 @@ onMounted(() => {
   let canvas: HTMLCanvasElement = document.getElementById(
     "chessboard"
   ) as HTMLCanvasElement;
+
+  let ctx = canvas.getContext("2d");
+  if (ctx == null) {
+    console.error("获取画布失败");
+    return;
+  }
+  // 设置棋盘大小
   canvas.width = 2 * margin + space * scale;
   canvas.height = 2 * margin + space * scale;
 
-  let ctx = canvas.getContext("2d");
-  if (ctx != null) {
-    // 绘制网格
-    let grid = new Path2D();
-    for (let i = 0; i < scale + 1; i++) {
-      const x = margin + i * space;
-      const y = margin + space * scale;
-      // 横
-      grid.moveTo(margin, x);
-      grid.lineTo(y, x);
-      // 纵
-      grid.moveTo(x, margin);
-      grid.lineTo(x, y);
-    }
-
-    ctx.strokeStyle = "black";
-    ctx.stroke(grid);
+  // 绘制网格
+  let grid = new Path2D();
+  for (let i = 0; i < scale + 1; i++) {
+    const x = margin + i * space;
+    const y = margin + space * scale;
+    // 横
+    grid.moveTo(margin, x);
+    grid.lineTo(y, x);
+    // 纵
+    grid.moveTo(x, margin);
+    grid.lineTo(x, y);
   }
+
+  ctx.strokeStyle = "black";
+  ctx.stroke(grid);
 });
 </script>
 
