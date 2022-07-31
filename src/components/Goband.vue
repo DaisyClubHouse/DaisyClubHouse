@@ -2,7 +2,8 @@
   <div class="goband">
     <div class="operating-area">
       <a-space>
-        <a-button type="primary" status="success" @click="connectServer">连接网络</a-button>
+        <a-button type="primary" status="success" @click="connectNetwork()">连接梅梅的服务器</a-button>
+        <a-button type="primary" status="warning" @click="createRoom()">创建房间</a-button>
       </a-space>
     </div>
     <canvas id="chessboard">
@@ -13,6 +14,8 @@
 
 <script setup lang="ts">
 import { onMounted } from "vue";
+
+import { createRoomRequest } from './room'
 
 const space: number = 50; // 棋盘件空格
 const scale: number = 10; // 棋盘格数 scale x scale
@@ -33,6 +36,7 @@ interface PieceCoord {
 
 // 棋盘
 class Chessboard {
+  conn!: WebSocket;
   chessCanvas: HTMLCanvasElement; // 棋盘画布对象
   chessboardCtx!: CanvasRenderingContext2D; // 棋盘画布操作对象
   piecesCtx!: CanvasRenderingContext2D; // 棋子画布操作对象
@@ -92,6 +96,30 @@ class Chessboard {
     this.chessboardCtx.stroke(grid);
   }
 
+  // 连接服务器
+  connectServer() {
+    console.log("connect server...");
+    this.conn = new WebSocket("ws://localhost:9000");
+
+    // 连接网络
+    this.conn.onopen = function (event) {
+      console.log(event);
+      console.log("connected");
+    };
+
+    // 网络断开
+    this.conn.onclose = function (event) {
+      console.log(event);
+      console.log("disconnected");
+    };
+
+    // 接收消息
+    this.conn.onmessage = function (event) {
+      console.log("recv: " + event.data);
+      console.log(event);
+    }
+  }
+
   // 画棋子
   drawPiece(point: PieceCoord, role: PlayerRole) {
     // 坐标系转换为实际棋子位置
@@ -131,31 +159,22 @@ function getPlayerRole(): PlayerRole {
   return PlayerRole.White;
 }
 
-let conn: WebSocket;
-
-function connectServer() {
-  console.log("connect server...");
-  conn = new WebSocket("ws://localhost:9000");
-
-  // 连接网络
-  conn.onopen = function (event) {
-    console.log(event);
-    console.log("connected");
-  };
-
-  // 网络断开
-  conn.onclose = function (event) {
-    console.log(event);
-    console.log("disconnected");
-  };
-
-  // 接收消息
-  conn.onmessage = function (event) {
-    console.log("recv: " + event.data);
-    console.log(event);
-  }
+// 连接网络
+function connectNetwork() {
+  chessboard.connectServer();
 }
 
+// 创建房间
+function createRoom() {
+  let conn = chessboard.conn;
+  if (conn == null) {
+    alert("请先连接网络")
+    return;
+  }
+  const pack = createRoomRequest("测试创建房间标题");
+  // 发送ws消息
+  conn.send(pack)
+}
 
 let chessboard: Chessboard;
 
