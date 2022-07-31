@@ -1,6 +1,6 @@
 interface MsgPack {
   type: MsgType;
-  msg: any;
+  payload: any;
 }
 
 enum MsgType {
@@ -19,7 +19,7 @@ export function createRoomRequest(title: string): string {
   };
   const msgPack: MsgPack = {
     type: MsgType.CreateRoomRequest,
-    msg: req,
+    payload: req,
   };
 
   return JSON.stringify(msgPack);
