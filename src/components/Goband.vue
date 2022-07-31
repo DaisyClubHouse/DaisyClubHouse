@@ -1,5 +1,10 @@
 <template>
   <div class="goband">
+    <div class="operating-area">
+      <a-space>
+        <a-button type="primary" status="success" @click="connectServer">连接网络</a-button>
+      </a-space>
+    </div>
     <canvas id="chessboard">
       <p>你的浏览器不支持Canvas</p>
     </canvas>
@@ -126,6 +131,30 @@ function getPlayerRole(): PlayerRole {
   return PlayerRole.White;
 }
 
+let conn: WebSocket;
+
+function connectServer() {
+  console.log("connect server...");
+  conn = new WebSocket("ws://localhost:9000");
+
+  // 连接网络
+  conn.onopen = function (event) {
+    console.log(event);
+    console.log("connected");
+  };
+
+  // 网络断开
+  conn.onclose = function (event) {
+    console.log(event);
+    console.log("disconnected");
+  };
+
+  // 接收消息
+  conn.onmessage = function (event) {
+    console.log("recv: " + event.data);
+    console.log(event);
+  }
+}
 
 
 let chessboard: Chessboard;
@@ -140,6 +169,14 @@ onMounted(() => {
 @boardBg: #ffd75b;
 
 .goband {
+
+  .operating-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    padding-bottom: 10px;
+  }
 
   // border: 1px solid green;
   #chessboard {
