@@ -20,9 +20,12 @@ import { onMounted, reactive } from "vue";
 import {
   createRoomRequest,
   joinRoomRequest,
-} from './room'
+  decodeMsgPack,
+  MsgType,
+} from './request'
 
-const space: number = 50; // 棋盘件空格
+
+const space: number = 50; // 棋件空格
 const scale: number = 10; // 棋盘格数 scale x scale
 const margin: number = 50; // 棋盘外空白
 const pieceSize: number = 18; // 棋子大小（直径）
@@ -122,6 +125,16 @@ class Chessboard {
     this.conn.onmessage = function (event) {
       console.log("recv: " + event.data);
       console.log(event);
+      if (typeof event.data === "string") {
+        const msg = decodeMsgPack(event.data);
+        switch (msg.type) {
+          case MsgType.BroadcastRoomGameBeginning:
+            console.log("游戏开始");
+            // TODO 
+            break;
+        }
+        console.log(msg);
+      }
     }
   }
 

@@ -1,13 +1,15 @@
-interface MsgPack {
+export interface MsgPack {
   type: MsgType;
   payload: any;
 }
 
-enum MsgType {
+export enum MsgType {
   CreateRoomRequest = 1,
   CreateRoomResponse = 2,
   JoinRoomRequest = 3,
   JoinRoomResponse = 4,
+
+  BroadcastRoomGameBeginning = 100,
 }
 
 interface CreateRoomRequest {
@@ -41,4 +43,9 @@ export function joinRoomRequest(code: string): string {
     payload: req,
   };
   return JSON.stringify(msgPack);
+}
+
+// 解析消息
+export function decodeMsgPack(msg: string): MsgPack {
+  return JSON.parse(msg);
 }
