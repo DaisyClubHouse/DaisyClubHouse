@@ -2,8 +2,9 @@
   <div class="goband">
     <div class="operating-area">
       <a-space>
-        <a-button type="primary" status="success" @click="connectNetwork()">连接梅梅的服务器</a-button>
+        <a-button type="primary" status="success" @click="connectNetwork()">连接服务器</a-button>
         <a-button type="primary" status="warning" @click="createRoom()">创建房间</a-button>
+        <a-input-search placeholder="输入房间号" :style="{ width: '230px' }" button-text="加入房间" search-button />
       </a-space>
     </div>
     <canvas id="chessboard">
