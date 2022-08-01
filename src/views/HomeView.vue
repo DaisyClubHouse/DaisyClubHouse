@@ -80,9 +80,9 @@ import Goband from "@/components/Goband.vue";
         flex-direction: column;
         justify-content: space-around;
 
-        span {
-          // border: 1px solid green;
-        }
+        // span {
+        // border: 1px solid green;
+        // }
       }
     }
   }
