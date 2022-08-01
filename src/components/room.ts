@@ -6,6 +6,8 @@ interface MsgPack {
 enum MsgType {
   CreateRoomRequest = 1,
   CreateRoomResponse = 2,
+  JoinRoomRequest = 3,
+  JoinRoomResponse = 4,
 }
 
 interface CreateRoomRequest {
@@ -22,5 +24,21 @@ export function createRoomRequest(title: string): string {
     payload: req,
   };
 
+  return JSON.stringify(msgPack);
+}
+
+interface JoinRoomRequest {
+  short_code: string;
+}
+
+// 加入房间请求
+export function joinRoomRequest(code: string): string {
+  const req: JoinRoomRequest = {
+    short_code: code,
+  };
+  const msgPack: MsgPack = {
+    type: MsgType.JoinRoomRequest,
+    payload: req,
+  };
   return JSON.stringify(msgPack);
 }

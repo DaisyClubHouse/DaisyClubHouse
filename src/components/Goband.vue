@@ -4,7 +4,8 @@
       <a-space>
         <a-button type="primary" status="success" @click="connectNetwork()">连接服务器</a-button>
         <a-button type="primary" status="warning" @click="createRoom()">创建房间</a-button>
-        <a-input-search placeholder="输入房间号" :style="{ width: '230px' }" button-text="加入房间" search-button />
+        <a-input-search v-model="roomInfo.code" placeholder="输入房间号" style="{ width: '230px' }" button-text="加入房间"
+          @click="joinRoom()" search-button />
       </a-space>
     </div>
     <canvas id="chessboard">
@@ -14,9 +15,12 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { onMounted, reactive } from "vue";
 
-import { createRoomRequest } from './room'
+import {
+  createRoomRequest,
+  joinRoomRequest,
+} from './room'
 
 const space: number = 50; // 棋盘件空格
 const scale: number = 10; // 棋盘格数 scale x scale
@@ -175,6 +179,25 @@ function createRoom() {
   const pack = createRoomRequest("测试创建房间标题");
   // 发送ws消息
   conn.send(pack)
+}
+
+// 房间信息定义
+const roomInfo = reactive({
+  code: "",
+})
+// 加入房间
+function joinRoom() {
+  let conn = chessboard.conn;
+  if (conn == null) {
+    alert("请先连接网络")
+    return;
+  }
+  if (roomInfo.code == "") {
+    alert("请输入房间号")
+    return;
+  }
+  const pack = joinRoomRequest(roomInfo.code);
+  conn.send(pack);
 }
 
 let chessboard: Chessboard;
