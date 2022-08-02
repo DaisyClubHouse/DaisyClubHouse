@@ -38,6 +38,25 @@ import Goband from "@/components/Goband.vue";
             </span>
           </div>
         </div>
+
+        <div class="player">
+          <div class="left-side">
+            <a-avatar :size="64">
+              <img alt="avatar" src="https://joeschmoe.io/api/v1/male/random" />
+            </a-avatar>
+          </div>
+          <div class="player-basic">
+            <span>
+              <a-typography-text>玩家昵称：</a-typography-text>
+              <a-typography-text type="success">漂浮群岛</a-typography-text>
+            </span>
+            <span>
+              <a-typography-text>胜率：</a-typography-text>
+              <a-typography-text type="warning">45%</a-typography-text>
+              胜45场 败50场 平5场
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
