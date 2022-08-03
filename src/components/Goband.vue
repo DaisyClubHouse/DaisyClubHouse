@@ -1,4 +1,4 @@
-<template>
+placeThePieceRequest<template>
   <div class="goband">
     <div class="operating-area">
       <a-space>
@@ -21,7 +21,9 @@ import {
   createRoomRequest,
   joinRoomRequest,
   decodeMsgPack,
+  placeThePieceRequest,
   MsgType,
+  type PlayerPlaceThePieceMessage
 } from './request'
 
 
@@ -76,7 +78,7 @@ class Chessboard {
       if (!self.isLegal(point)) {
         alert("落子不合法")
       } else {
-        self.drawPiece(point, getPlayerRole());
+        playerPlaceThePiece(point);
       }
     }
   }
@@ -121,6 +123,7 @@ class Chessboard {
       console.log("disconnected");
     };
 
+    const self = this;
     // 接收消息
     this.conn.onmessage = function (event) {
       console.log("recv: " + event.data);
@@ -131,6 +134,16 @@ class Chessboard {
           case MsgType.BroadcastRoomGameBeginning:
             console.log("游戏开始");
             // TODO 
+            break;
+          case MsgType.BroadcastPlaceThePiece:
+            console.log("收到落子消息");
+            const eventPayload: PlayerPlaceThePieceMessage = msg.payload
+            // const point = msg.data;
+            let role = PlayerRole.Black;
+            if (eventPayload.piece_white) {
+              role = PlayerRole.White;
+            }
+            self.drawPiece({ x: eventPayload.x, y: eventPayload.y }, role);
             break;
         }
         console.log(msg);
@@ -210,6 +223,17 @@ function joinRoom() {
     return;
   }
   const pack = joinRoomRequest(roomInfo.code);
+  conn.send(pack);
+}
+
+// 下棋落子
+function playerPlaceThePiece(point: PieceCoord) {
+  let conn = chessboard.conn;
+  if (conn == null) {
+    alert("请先连接网络")
+    return;
+  }
+  const pack = placeThePieceRequest(point.x, point.y);
   conn.send(pack);
 }
 
