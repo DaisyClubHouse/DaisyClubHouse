@@ -11,6 +11,10 @@ import { reactive } from 'vue';
 
 const rankColumns = [
 	{
+		title: '排名',
+		dataIndex: 'rank',
+	},
+	{
 		title: '玩家',
 		dataIndex: 'player'
 	},
@@ -26,10 +30,18 @@ const rankColumns = [
 
 const rankData = reactive([
 	{
+		rank: '#1',
 		id: '91or2j1',
 		player: "漂浮群岛",
-		level: "白银",
+		level: "钻石",
 		score: "999",
+	},
+	{
+		rank: '#2',
+		id: '12r1',
+		player: '小白菜',
+		level: '黄金',
+		score: '421'
 	}
 ])
 

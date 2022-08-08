@@ -1,10 +1,20 @@
 <template>
 	<div class="hall">
 		<div class="room">
-			<span>游戏大厅</span>
 			<div>
-				<a-table :columns="columns" :data="data">
-				</a-table>
+				<a-carousel :style="{
+					width: '600px',
+					height: '240px',
+				}" :auto-play="true" indicator-type="dot" show-arrow="hover">
+					<a-carousel-item v-for="image in images">
+						<img :src="image" :style="{
+							width: '100%',
+						}" />
+					</a-carousel-item>
+				</a-carousel>
+			</div>
+			<div class="list">
+				<Room />
 			</div>
 		</div>
 		<div class="rank">
@@ -35,41 +45,14 @@
 <script setup lang="ts">
 import { reactive, onMounted } from 'vue';
 import Rank from './components/rank.vue';
+import Room from './components/room.vue';
 
-const columns = [
-	{
-		title: '序号',
-		dataIndex: 'id',
-	},
-	{
-		title: '排名',
-		dataIndex: 'rank',
-	},
-	{
-		title: '房间名称',
-		dataIndex: 'name'
-	},
-	{
-		title: '房间状态',
-		dataIndex: 'status',
-	},
-	{
-		title: '创建人',
-		dataIndex: 'creator'
-	},
-	{
-		title: '创建时间',
-		dataIndex: 'createTime'
-	}
-]
+const images = [
+	'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/cd7a1aaea8e1c5e3d26fe2591e561798.png~tplv-uwbnlip3yd-webp.webp',
+	'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/6480dbc69be1b5de95010289787d64f1.png~tplv-uwbnlip3yd-webp.webp',
+	'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/0265a04fddbd77a19602a15d9d55d797.png~tplv-uwbnlip3yd-webp.webp',
+];
 
-const data = reactive([{
-	id: 1,
-	name: '棋盘大战',
-	status: 'waiting',
-	creator: '张三',
-	createTime: '十分钟前',
-}])
 
 onMounted(() => {
 	console.log("init")
@@ -81,15 +64,19 @@ onMounted(() => {
 	display: flex;
 
 	>* {
-		border: 1px solid red;
+		// border: 1px solid red;
 	}
 
 	.room {
-		padding: 20px;
+
+		.list {
+			margin-top: 40px;
+		}
+
 	}
 
 	.rank {
-		padding: 20px;
+		padding-left: 20px;
 	}
 }
 </style>
