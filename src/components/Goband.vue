@@ -5,7 +5,7 @@ placeThePieceRequest<template>
         <a-button type="primary" status="success" @click="connectNetwork()">连接服务器</a-button>
         <a-button type="primary" status="warning" @click="createRoom()">创建房间</a-button>
         <a-input-search v-model="roomInfo.code" placeholder="输入房间号" style="{ width: '230px' }" button-text="加入房间"
-          @click="joinRoom()" search-button />
+          @press-enter="joinRoom()" search-button />
       </a-space>
     </div>
     <canvas id="chessboard">
@@ -28,7 +28,7 @@ import {
 
 
 const space: number = 50; // 棋件空格
-const scale: number = 10; // 棋盘格数 scale x scale
+const scale: number = 14; // 棋盘格数 scale x scale
 const margin: number = 50; // 棋盘外空白
 const pieceSize: number = 18; // 棋子大小（直径）
 
@@ -197,6 +197,7 @@ function connectNetwork() {
 
 // 创建房间
 function createRoom() {
+  console.log("aa")
   let conn = chessboard.conn;
   if (conn == null) {
     alert("请先连接网络")
