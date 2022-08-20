@@ -2,7 +2,8 @@ FROM node:16 as builder
 ENV NODE_ENV=producation
 WORKDIR /app
 COPY package.json ./
-RUN npm config set registry https://registry.npm.taobao.org & npm install
+RUN npm config set registry https://registry.npm.taobao.org
+RUN npm install
 COPY ./ ./
 RUN npm run build
 
