@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<a-table :columns="roomColumns" :data="roomData" size="small">
+		<a-table :columns="roomColumns" :data="roomData">
 			<template #status="{ record }">
 				<a-tag v-if="record.status == 'waiting'" color="orange">等待中</a-tag>
 				<a-tag v-else-if="record.status == 'playing'" color="green">进行中</a-tag>
@@ -37,22 +37,22 @@ const roomColumns = [
 	{
 		title: '房间状态',
 		slotName: 'status',
-		align: 'center'
+		// align: 'center'
 	},
 	{
 		title: '创建人',
 		dataIndex: 'creator',
-		align: 'center'
+		// align: 'center'
 	},
 	{
 		title: '创建时间',
 		slotName: 'createTime',
-		align: 'center'
+		// align: 'center'
 	},
 	{
 		title: '操作',
 		slotName: 'action',
-		align: 'center'
+		// align: 'center'
 	}
 ]
 
