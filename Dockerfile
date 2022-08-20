@@ -3,10 +3,10 @@ ENV NODE_ENV=producation
 WORKDIR /app
 COPY package.json ./
 COPY package-lock.json ./
-RUN yarn config set registry https://registry.npm.taobao.org
-RUN yarn install
+RUN npm config set registry https://registry.npm.taobao.org
+RUN npm install
 COPY ./ ./
-RUN yarn build
+RUN npm build
 
 FROM nginx:alpine
 WORKDIR /usr/share/nginx/html/
